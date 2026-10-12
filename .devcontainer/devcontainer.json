@@ -1,0 +1,51 @@
+{
+    "name": "cd-hands-on",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "dev",
+    "updateRemoteUserUID": true,
+    "initializeCommand": "bash .devcontainer/init.sh",
+    "forwardPorts": [
+        18080
+    ],
+    "portsAttributes": {
+        "18080": {
+            "label": "prod-web",
+            "onAutoForward": "openPreview"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "MS-CEINTL.vscode-language-pack-ja",
+                "vscjava.vscode-java-pack",
+                "vmware.vscode-boot-dev-pack",
+                "josevseb.google-java-format-for-vs-code",
+                "redhat.vscode-xml",
+                "github.vscode-github-actions",
+                "mhutchie.git-graph",
+                "qwtel.sqlite-viewer",
+                "ecmel.vscode-html-css",
+                "ms-vscode.live-server"
+            ],
+            "settings": {
+                "workbench.colorTheme": "Dark 2026",
+                "java.configuration.runtimes": [
+                    {
+                        "name": "JavaSE-25",
+                        "path": "/opt/java/openjdk",
+                        "default": true
+                    }
+                ],
+                "java.jdt.ls.java.home": "/opt/java/openjdk",
+                "java.configuration.updateBuildConfiguration": "automatic",
+                "java.compile.nullAnalysis.mode": "automatic",
+                "java.server.launchMode": "Standard",
+                "java.help.firstView": "none",
+                "java.help.showReleaseNotes": false,
+                "redhat.telemetry.enabled": false
+            }
+        }
+    }
+}

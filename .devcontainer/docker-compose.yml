@@ -1,0 +1,65 @@
+services:
+  dev:
+    build:
+      context: ./docker/java
+      dockerfile: ./Dockerfile
+    environment:
+      - TZ=${TZ}
+      - SPRING_PROFILES_ACTIVE=local
+    volumes:
+      - ../:/workspace
+      - ../.devcontainer/ssh/scripts/client.sh:/entrypoint/client.sh
+      - ../.devcontainer/ssh/keys:/mnt/devcontainer-ssh-key:ro
+      - ../.devcontainer/ssh/config/config:/mnt/devcontainer-ssh-config/config:ro
+    ports:
+      - "8080:8080"
+    entrypoint: ["/entrypoint/client.sh", "dev"]
+    command: ["sleep", "infinity"]
+    hostname: dev
+    networks:
+      default:
+        aliases:
+          - app
+  prod:
+    build:
+      context: ./docker/prod
+      dockerfile: ./Dockerfile
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ../.devcontainer/docker/prod/env_var_setting.sh:/entrypoint/env_var_setting.sh
+      - ../.devcontainer/ssh/scripts/server.sh:/entrypoint/server.sh
+      - ../.devcontainer/ssh/keys:/mnt/devcontainer-ssh-key:ro
+      - ../.devcontainer/ssh/config/sshd_config:/etc/ssh/sshd_config:ro
+    ports:
+      - "18080:8080"
+    entrypoint: ["/entrypoint/env_var_setting.sh", "/entrypoint/server.sh", "deployer"]
+    command: ["/usr/sbin/sshd", "-D", "-e"]
+    hostname: prod
+    networks:
+      default:
+        aliases:
+          - prod
+  cd:
+    build:
+      context: ./docker/cd
+      dockerfile: ./Dockerfile
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ../.devcontainer/ssh/scripts/server.sh:/entrypoint/server.sh
+      - ../.devcontainer/ssh/scripts/client.sh:/entrypoint/client.sh
+      - ../.devcontainer/ssh/keys:/mnt/devcontainer-ssh-key:ro
+      - ../.devcontainer/ssh/config/sshd_config:/etc/ssh/sshd_config:ro
+      - ../.devcontainer/ssh/config/config:/mnt/devcontainer-ssh-config/config:ro
+    entrypoint: ["/entrypoint/server.sh", "runner", "/entrypoint/client.sh", "runner"]
+    command: ["/usr/sbin/sshd", "-D", "-e"]
+    hostname: cd
+    networks:
+      default:
+        aliases:
+          - cd
+
+networks:
+  default:
+    driver: bridge

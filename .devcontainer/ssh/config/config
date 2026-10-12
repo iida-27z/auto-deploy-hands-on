@@ -1,0 +1,7 @@
+Host prod
+    HostName prod
+    StrictHostKeyChecking accept-new
+
+Host cd
+    HostName cd
+    StrictHostKeyChecking accept-new
